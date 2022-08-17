@@ -1,9 +1,18 @@
-import React, { FormEvent, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import React, { useState, useEffect } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import {
-  Button, Divider, Flex,
+  Button,
+  Divider,
+  Flex,
   Icon,
-  Image, Stack, Text
+  Image,
+  Stack,
+  Text,
+  Collapse,
+  Link,
+  ScaleFade,
+  Input as InputChakra,
+  Checkbox
 } from '@chakra-ui/react';
 import { Input } from '../../components/Form/Input';
 
@@ -18,7 +27,7 @@ import ForeCastLogo from "../../assets/logo.svg";
 
 
 
-type SignInFormData = {
+type ISignInFormData = {
   email: string;
   password: string;
 };
@@ -30,39 +39,38 @@ const signInFormSchema = yup.object().shape({
 
 export const SignIn: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  // const [colapse, setColapse] = useState(false);
+  const [colapse, setColapse] = useState(false);
   const navigate = useNavigate()
 
-  const { register, handleSubmit, formState } = useForm({
+  const { register, handleSubmit, formState } = useForm<ISignInFormData>({
     resolver: yupResolver(signInFormSchema),
   });
 
   const { errors } = formState;
 
-  // useEffect(() => {
-  //   new Promise(resolve => setTimeout(() => setColapse(true), 2000));
-  // }, []);
+  useEffect(() => {
+    new Promise(resolve => setTimeout(() => setColapse(true), 2000));
+  }, []);
 
   async function handleClickRegister() {
-    // setColapse(false);
+    setColapse(false);
     await new Promise(resolve => setTimeout(resolve, 1000));
-    // push('/signup');
+    navigate('/signup');
   }
 
-  async function handleSignIn(values: FormEvent) {
+  const handleSignIn: SubmitHandler<ISignInFormData> = async values => {
     // try {
-      values.preventDefault()
-      setLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      navigate("/home")
-      setLoading(false);
+    setLoading(true);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    navigate("/home")
+    setLoading(false);
     // } catch (error) {
     //   setLoading(false);
     // }
   };
 
   return (
-    // <ScaleFade transition={{ enter: { duration: 0.2, delay: 0.5 } }} in={true}>
+    <ScaleFade transition={{ enter: { duration: 0.2, delay: 0.5 } }} in={true}>
       <Flex
         w="100%"
         h="100vh"
@@ -78,34 +86,35 @@ export const SignIn: React.FC = () => {
             alignSelf="center"
             marginBottom="5"
           />
+          <Collapse in={colapse} unmountOnExit>
+            <Button
+              w="full"
+              leftIcon={<FaGoogle />}
+              type="submit"
+              mt="6"
+              colorScheme="red"
+              size="lg"
+              fontWeight="400"
+              mb="10"
+            // onClick={() => signin('google')}
+            >
+              Entre com o Google
+            </Button>
 
-          <Button
-            leftIcon={<FaGoogle />}
-            type="submit"
-            mt="6"
-            colorScheme="red"
-            size="lg"
-            fontWeight="400"
-          // onClick={() => signin('google')}
-          >
-            Entre com o Google
-          </Button>
-
-          <Flex align="center">
-            <Divider color="gray.300" />
-            <Text marginLeft="2" marginRight="2" color="gray.300">
-              Ou
-            </Text>
-            <Divider color="gray.300" />
-          </Flex>
-          {/* <Collapse in={colapse} unmountOnExit> */}
+            <Flex align="center">
+              <Divider color="gray.300" />
+              <Text marginLeft="2" marginRight="2" color="gray.300">
+                Ou
+              </Text>
+              <Divider color="gray.300" />
+            </Flex>
             <Flex
               as="form"
               width="100%"
               margin="auto"
               flexDir="column"
-              padding="6"
-              onSubmit={handleSignIn}
+              // padding="6"
+              onSubmit={handleSubmit(handleSignIn)}
             >
               <Stack spacing="5">
                 <Input
@@ -113,7 +122,7 @@ export const SignIn: React.FC = () => {
                   size="lg"
                   type="email"
                   error={errors.email}
-                  {...register('email', {})}
+                  {...register('email')}
                 />
                 <Input
                   label="Senha"
@@ -134,22 +143,22 @@ export const SignIn: React.FC = () => {
               >
                 Login
               </Button>
-              {/* <Link href="/signup" passHref> */}
-              <Button
-                bg="transparent"
-                _hover={{ color: '#44EE88' }}
-                alignSelf="center"
-                marginTop="6"
-                onClick={handleClickRegister}
-              >
-                <Icon as={FiLogOut} marginRight="2" />
-                Registrar-se
-              </Button>
-              {/* </Link> */}
+              <Checkbox />
+              <Link href="/signup" passHref alignSelf="center">
+                <Button
+                  bg="transparent"
+                  _hover={{ color: '#44EE88' }}
+                  marginTop="6"
+                  onClick={handleClickRegister}
+                >
+                  <Icon as={FiLogOut} marginRight="2"/>
+                  Registrar-se
+                </Button>
+              </Link>
             </Flex>
-          {/* </Collapse> */}
+          </Collapse>
         </Stack>
       </Flex>
-    // </ScaleFade>
+    </ScaleFade>
   );
 }
