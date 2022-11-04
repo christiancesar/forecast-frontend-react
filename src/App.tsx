@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Budget } from './pages/Budget';
 import { Home } from './pages/Home';
 import { NotFoundPage } from './pages/NotFound';
 import { SignIn } from "./pages/SignIn";
@@ -13,6 +14,9 @@ const App: React.FC = () => {
         <Route path="/home" element={<Home/>} />
         <Route path="/signin" element={<SignIn/>} /> 
         <Route path="/signup" element={<SignUp/>} /> 
+
+        <Route path="/budgets" element={<Budget/>} /> 
+
         <Route path="*" element={<NotFoundPage/>}/>
       </Routes>
     </BrowserRouter>
